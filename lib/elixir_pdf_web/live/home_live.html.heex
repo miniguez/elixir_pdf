@@ -1,0 +1,55 @@
+<div class="mx-auto max-w-2xl py-8">
+  <div class="flex flex-col items-center justify-center">
+    <h1 class="text-2xl font-bold mb-8">Upload PDF</h1>
+
+    <form phx-submit="save" phx-change="validate" class="w-full">
+      <div class="flex flex-col items-center space-y-4 w-full" phx-drop-target={@uploads.pdf.ref}>
+        <div class="w-full border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-gray-400 transition-colors">
+          <div class="space-y-2">
+            <div class="text-gray-600">
+              Drag and drop your PDF here or
+              <label class="cursor-pointer text-blue-500 hover:text-blue-600">
+                browse <.live_file_input upload={@uploads.pdf} class="hidden" />
+              </label>
+            </div>
+            <p class="text-xs text-gray-500">PDF files only, up to 10MB</p>
+          </div>
+        </div>
+
+        <%= for entry <- @uploads.pdf.entries do %>
+          <div class="w-full">
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded">
+              <div class="flex items-center space-x-2">
+                <span class="font-medium">{entry.client_name}</span>
+                <span class="text-sm text-gray-500">
+                  ({entry.client_size}B)
+                </span>
+              </div>
+
+              <button
+                type="button"
+                class="text-red-500 hover:text-red-700"
+                phx-click="cancel-upload"
+                phx-value-ref={entry.ref}
+              >
+                &times;
+              </button>
+            </div>
+
+            <%= for err <- upload_errors(@uploads.pdf, entry) do %>
+            <% end %>
+          </div>
+        <% end %>
+
+        <%= if length(@uploads.pdf.entries) > 0 do %>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            Upload
+          </button>
+        <% end %>
+      </div>
+    </form>
+  </div>
+</div>
